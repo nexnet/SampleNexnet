@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="M800DefaultApplicationKey">mapp9e271918-a0de-4221-924e-9e58de647436</string>
+    <string name="M800DefaultApplicationSecret">af77c703-2fd1-449f-b8a0-2b7653038c7b</string>
+    <string name="M800DefaultDeveloperKey">mdev847213f6-3d33-4904-9346-21b9a431e7b0</string>
+    <string name="M800DefaultDeveloperSecret">4456600b-a26b-423e-97e3-04459f0ec87e</string>
+
+    <string name="M800DefaultApplicationIdentifier">com.maaiii-api.org.nexnet</string>
+    <string name="M800DefaultApplicationVersion">1.0.0</string>
+    <string name="M800DefaultCarrier">nexnet.maaiii-api.org</string>
+    <string name="M800DefaultCapabilities">incoming,outgoing</string>
+    <string name="M800DefaultExperation">10000</string>
+    <string name="M800DefaultTargetServer">0</string>
+
+    <string-array name="M800DefaultVerificationHosts">
+        <item>https://ivs.maaii.com</item>
+        <item>https://vs-bj.m800.com</item>
+    </string-array>
+</resources>

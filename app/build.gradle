@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "nexnet.com.solution"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        multiDexKeepProguard file('multiDexKeep.pro')
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile 'M800SDK-proguard-rules.pro'
+            proguardFile 'annotations.pro'
+            proguardFile 'JPush.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile 'M800SDK-proguard-rules.pro'
+            proguardFile 'annotations.pro'
+            proguardFile 'JPush.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    //m800
+    compile(name: 'M800SDK', ext: 'aar') { transitive = true }
+    compile(name: 'M800PhoneVerification_testbed', ext: 'aar')
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.google.guava:guava:18.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.google.code.findbugs:jsr305:2.0.3'
+    compile 'com.google.android.gms:play-services:9.8.0'
+    compile 'com.googlecode.libphonenumber:libphonenumber:7.0.4'
+    compile 'com.infstory:proguard-annotations:1.0.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+}
