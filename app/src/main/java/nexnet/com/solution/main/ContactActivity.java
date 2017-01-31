@@ -1,5 +1,6 @@
 package nexnet.com.solution.main;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -38,6 +40,8 @@ public class ContactActivity extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         new GetContactsTask().execute();
+        
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +53,32 @@ public class ContactActivity extends Fragment {
 
         listViewContacts=(ListView)view.findViewById(R.id.listViewContacts);
         listViewContacts.setAdapter(arrayAdapter);
+        listViewContacts.setClickable(true);
+        listViewContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object o = listViewContacts.getItemAtPosition(position);
+
+                String username = o.toString();
+                M800Client client = M800SDK.getInstance().getRealtimeClient();
+
+                String carrier = M800SDK.getInstance().getCarrier();
+                String jid = username;
+                M800OutgoingCall call = client.createCall(username, jid, carrier, null, "");
+                if (null != call){
+                    call.dial();
+                }
+
+                Intent intent = new Intent();
+                intent.putExtra(CallScreenActivity.EXTRA_KEY_CALL_ID, call.callID());
+                intent.putExtra("phonenumber: ",o.toString());
+                intent.setClass(getContext(), CallScreenActivity.class);
+
+
+                Log.d(DEBUG_TAG,"selected number" + o.toString());
+                startActivity(intent);
+            }
+        });
 
         //M800Client realtimeClient = M800SDK.getInstance().getRealtimeClient();
       //  M800OutgoingCall call = realtimeClient.createCall("+639104675832", "+639104675832", "maaii.com", null, "");
@@ -57,6 +87,8 @@ public class ContactActivity extends Fragment {
         // Inflate the layout for this fragment
        // return inflater.inflate(R.layout.activity_contact, container, false);
     }
+
+
 
     @Override
     public void onResume() {

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import nexnet.com.solution.R;
+
+import com.m800.msme.api.M800ClientDelegate;
 import com.m800.sdk.IM800Utils;
 import com.m800.sdk.M800SDK;
 import com.m800.sdk.M800SDKConfiguration;

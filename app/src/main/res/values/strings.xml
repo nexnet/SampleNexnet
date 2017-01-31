@@ -17,4 +17,5 @@
     <string name="number_nine">9</string>
     <string name="btn_clear">*</string>
     <string name="btn_backspace">#</string>
+    <string name="title_activity_call_screen">CallScreenActivity</string>
 </resources>

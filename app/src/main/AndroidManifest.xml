@@ -34,6 +34,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name="nexnet.com.solution.service.Certificate"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -78,10 +79,14 @@
         <activity
             android:name=".main.MainActivity"
             android:theme="@style/MyMaterialTheme" />
-        <activity android:name=".main.ContactActivity" />
-        <activity android:name=".main.IMActivity" />
-        <activity android:name=".main.LogActivity" />
-        <activity android:name=".main.CallPhoneActivity"></activity>
+        <activity android:name=".main.CallPhoneActivity" />
+        <activity
+            android:name=".main.CallScreenActivity"
+            android:label="@string/title_activity_call_screen"
+            android:theme="@style/SplashTheme"></activity>
+        <service android:name="nexnet.com.solution.service.AppM800Class"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>
