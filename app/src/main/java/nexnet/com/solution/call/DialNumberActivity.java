@@ -1,4 +1,4 @@
-package nexnet.com.solution.main;
+package nexnet.com.solution.call;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import nexnet.com.solution.R;
 
-public class CallPhoneActivity extends AppCompatActivity implements View.OnClickListener {
+public class DialNumberActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText callPhoneNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call_phone);
+        setContentView(R.layout.activity_dial_number);
 
         callPhoneNumber = (EditText) findViewById(R.id.callPhoneNumber);
 

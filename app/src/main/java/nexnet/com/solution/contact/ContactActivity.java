@@ -1,9 +1,8 @@
-package nexnet.com.solution.main;
+package nexnet.com.solution.contact;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.android.gms.nearby.messages.internal.Update;
 import com.m800.msme.api.M800Client;
 import com.m800.msme.api.M800OutgoingCall;
 import com.m800.sdk.M800SDK;
@@ -21,10 +19,10 @@ import com.m800.sdk.contact.IM800Contact;
 import com.m800.sdk.contact.IM800NativeContact;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import nexnet.com.solution.R;
+import nexnet.com.solution.call.CallScreenActivity;
 
 public class ContactActivity extends Fragment {
     private static final String DEBUG_TAG=ContactActivity.class.getSimpleName();

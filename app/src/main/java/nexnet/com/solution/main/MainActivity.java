@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,30 +13,22 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.util.Log;
 
 import com.m800.sdk.IM800Management;
 import com.m800.sdk.IM800SystemUpdateNotification;
-import com.m800.sdk.M800Error;
 import com.m800.sdk.M800SDK;
-import com.m800.sdk.contact.IM800Contact;
-import com.m800.sdk.contact.IM800NativeContact;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nexnet.com.solution.R;
-import nexnet.com.solution.service.AppM800Class;
+import nexnet.com.solution.activitylog.CallLogActivity;
+import nexnet.com.solution.chat.IMActivity;
+import nexnet.com.solution.contact.ContactActivity;
 import nexnet.com.solution.service.Certificate;
-import nexnet.com.solution.service.Utilities;
-
-import static android.R.id.list;
-import static com.maaii.type.Platform.android;
 
 public class MainActivity extends AppCompatActivity implements IM800Management.SystemUpdateListener {
     private static final String DEBUG_TAG=MainActivity.class.getSimpleName();
@@ -60,8 +51,11 @@ public class MainActivity extends AppCompatActivity implements IM800Management.S
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setIcon(R.drawable.app_icon);
         mM800SDK = M800SDK.getInstance();
 
 
@@ -96,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements IM800Management.S
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new IMActivity(), "IM");
         adapter.addFragment(new ContactActivity(), "CONTACTS");
-        adapter.addFragment(new LogActivity(), "LOGS");
+        adapter.addFragment(new CallLogActivity(), "LOGS");
         viewPager.setAdapter(adapter);
     }
 

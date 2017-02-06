@@ -1,4 +1,4 @@
-package nexnet.com.solution.main;
+package nexnet.com.solution.activitylog;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -6,40 +6,37 @@ import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.m800.msme.api.M800Call;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import nexnet.com.solution.R;
+import nexnet.com.solution.call.DialNumberActivity;
 import nexnet.com.solution.database.AppDB;
 import nexnet.com.solution.database.DBCallLog;
 import nexnet.com.solution.database.DBCallLogTable;
-import nexnet.com.solution.service.DateUtil;
 
 
-public class LogActivity extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
-    private static final String DEBUG_TAG=LogActivity.class.getSimpleName();
+public class CallLogActivity extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+    private static final String DEBUG_TAG=CallLogActivity.class.getSimpleName();
     private View view;
     private FloatingActionButton dialButton;
     private SwipeRefreshLayout mSwipeLayout;
@@ -47,7 +44,7 @@ public class LogActivity extends Fragment implements SwipeRefreshLayout.OnRefres
     private ArrayAdapter<String> arrayAdapter;
     private ArrayList<String> CallList;
     private ListView listViewCallLog;
-    public LogActivity() {
+    public CallLogActivity() {
         // Required empty public constructor
     }
     @Override
@@ -60,7 +57,7 @@ public class LogActivity extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view=inflater.inflate(R.layout.activity_log, container,false);
+        view=inflater.inflate(R.layout.activity_call_log, container,false);
         dialButton=(FloatingActionButton) view.findViewById(R.id.dialButton);
         CallList = new ArrayList<String>();
         CallList.add(" ");
@@ -75,12 +72,13 @@ public class LogActivity extends Fragment implements SwipeRefreshLayout.OnRefres
 
         dialButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent myIntent = new Intent( view.getContext(), CallPhoneActivity.class);
+                Intent myIntent = new Intent( view.getContext(), DialNumberActivity.class);
                 startActivityForResult(myIntent, 0);
             }
         });
         return view;
     }
+
 
     @Override
     public void onRefresh() {
@@ -187,17 +185,19 @@ public class LogActivity extends Fragment implements SwipeRefreshLayout.OnRefres
         @Override
         protected void onPostExecute(List<CallLogGroup> updatedData) {
             CallList.clear();
-
+            String caller="";
             for(int i=0; i<updatedData.size(); i++){
-                String caller="";
+
                 CallLogGroup callLogGroup = updatedData.get(i);
                 for(int ii=0; ii<callLogGroup.items.size(); ii++) {
                     Log.d(DEBUG_TAG, "callee:" + callLogGroup.getChildItem(ii).getCallee());
                     Log.d(DEBUG_TAG, "caller:" + callLogGroup.getChildItem(ii).getCaller());
                     Log.d(DEBUG_TAG, "call id:" + callLogGroup.getChildItem(ii).getCallId());
-                    caller=callLogGroup.getChildItem(ii).getCaller();
+                    Log.d(DEBUG_TAG, "time and date:" + getDate(callLogGroup.getChildItem(ii).getCallEndTime()));
+                    caller=callLogGroup.getChildItem(ii).getCaller() + " - Last " + getDate(callLogGroup.getChildItem(ii).getCallEndTime());
+                    CallList.add(caller);
                 }
-                CallList.add(caller);
+
             }
            /* updatedData.get(0);
             for (CallLogGroup mydata : updatedData) {
@@ -216,6 +216,39 @@ public class LogActivity extends Fragment implements SwipeRefreshLayout.OnRefres
         public boolean isDone() {
             return mDone;
         }
+    }
+
+    private String getDate(long time) {
+        Calendar c = Calendar.getInstance(Locale.ENGLISH);
+        Log.d(DEBUG_TAG, "time and date now:" +  c.getTime());
+        Calendar cal2 = Calendar.getInstance(Locale.ENGLISH);
+        cal2.setTimeInMillis(time);
+        Log.d(DEBUG_TAG, "time and date call:" +  cal2.getTime());
+        long diffInMillisec = c.getTimeInMillis() - cal2.getTimeInMillis();
+        long diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMillisec);
+        long seconds = diffInSec % 60;
+        diffInSec/= 60;
+        long  minutes =diffInSec % 60;
+        diffInSec /= 60;
+        long  hours = diffInSec % 24;
+        diffInSec /= 24;
+        long  days = diffInSec;
+
+        Log.d(DEBUG_TAG, " seconds: " + seconds + " minutes: " + minutes + " hours: " + hours + " days: " + days);
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        String date = DateFormat.format("dd-MM", cal).toString();
+        String toreturn= "";
+        if(days>1){
+            toreturn="Last " + DateFormat.format("dd-MM", cal).toString();
+        }else if(days==1){
+            toreturn="Yesterday " + DateFormat.format("h:m", cal).toString();
+
+        }else{
+            toreturn=hours + " hours ago";
+
+        }
+        return date;
     }
 
 
@@ -281,5 +314,18 @@ public class LogActivity extends Fragment implements SwipeRefreshLayout.OnRefres
         public int getChildCount() {
             return items.size();
         }
+    }
+
+    @Override
+    public void onResume() {
+        Log.e(DEBUG_TAG, "onResume of ContactFragment");
+        loadCallLogs();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Log.e(DEBUG_TAG, "OnPause of ContactFragment");
+        super.onPause();
     }
 }

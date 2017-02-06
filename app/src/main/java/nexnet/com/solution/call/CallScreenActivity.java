@@ -1,9 +1,7 @@
-package nexnet.com.solution.main;
+package nexnet.com.solution.call;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -14,20 +12,15 @@ import com.m800.msme.api.M800Audio;
 import com.m800.msme.api.M800AudioRoutes;
 import com.m800.msme.api.M800Call;
 import com.m800.msme.api.M800CallDelegate;
-import com.m800.msme.api.M800ClientConfiguration;
 import com.m800.msme.jni.EMsmeMediaType;
 import com.m800.sdk.M800SDK;
 
-import java.io.File;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import nexnet.com.solution.R;
 import nexnet.com.solution.service.CallLogManager;
-import nexnet.com.solution.service.Certificate;
-
-import static android.content.ContentValues.TAG;
 
 public class CallScreenActivity extends Activity implements View.OnClickListener, M800CallDelegate {
     private final static String DEBUG_TAG=CallScreenActivity.class.getSimpleName();
