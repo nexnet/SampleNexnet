@@ -1,17 +1,23 @@
 package nexnet.com.solution.contact;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.m800.msme.api.M800Client;
 import com.m800.msme.api.M800OutgoingCall;
 import com.m800.sdk.M800SDK;
@@ -31,26 +37,27 @@ public class ContactActivity extends Fragment {
     private M800SDK mM800SDK;
     private ArrayList<String> ContactList;
     private ArrayAdapter<String> arrayAdapter;
+
+    private M800ContactsAdapter mM800Adapter;
+    private List<IM800Contact> mAdapterData;
     public ContactActivity() {
         // Required empty public constructor
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new GetContactsTask().execute();
-        
+        loadListData();
+    }
 
+    public void loadListData() {
+        new GetContactsTask().execute();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.activity_contact, container,false);
-        ContactList = new ArrayList<String>();
-        ContactList.add(" ");
-
-        arrayAdapter = new ArrayAdapter<String>(getActivity(),R.layout.contact_item,R.id.Itemname,ContactList);
-
-        listViewContacts=(ListView)view.findViewById(R.id.listViewContacts);
-        listViewContacts.setAdapter(arrayAdapter);
+        listViewContacts=(ListView) view.findViewById(R.id.listViewContacts);
+        mM800Adapter = new M800ContactsAdapter(getContext());
+        listViewContacts.setAdapter(mM800Adapter);
         listViewContacts.setClickable(true);
         listViewContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -108,11 +115,8 @@ public class ContactActivity extends Fragment {
         @Override
         protected void onPostExecute(List<IM800Contact> contacts) {
             // Update UI
-            ContactList.clear();
-            for (IM800Contact contact : contacts) {
-                ContactList.add(contact.getUserProfile().getJID());
-            }
-            arrayAdapter.notifyDataSetChanged();
+            mAdapterData = contacts;
+            Log.e(DEBUG_TAG, contacts.toString());
 
         }
     }
@@ -130,7 +134,45 @@ public class ContactActivity extends Fragment {
             }
             //contactlist=contacts;
             // Update UI
-            arrayAdapter.notifyDataSetChanged();
+            //arrayAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private class M800ContactsAdapter extends ArrayAdapter<IM800Contact> {
+
+        public M800ContactsAdapter(Context context) {
+            super(context, R.layout.activity_contact);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.contactlist_item, parent, false);
+                holder = new ViewHolder();
+                holder.mProfileImageView = (ImageView) convertView.findViewById(R.id.contact_image);
+                holder.mNameTextView = (TextView) convertView.findViewById(R.id.contact_name);
+                holder.mStatusTextView = (TextView) convertView.findViewById(R.id.contact_number);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            IM800Contact contact = getItem(position);
+            Glide.with(ContactActivity.this)
+                    .load(contact.getUserProfile().getProfileImageURL())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.mProfileImageView);
+            holder.mNameTextView.setText(contact.getUserProfile().getName());
+            holder.mStatusTextView.setText(contact.getPhoneNumber());
+            Log.d(DEBUG_TAG,"ListView");
+            return convertView;
+        }
+
+        private class ViewHolder {
+            ImageView mProfileImageView;
+            TextView mNameTextView;
+            TextView mStatusTextView;
         }
     }
 

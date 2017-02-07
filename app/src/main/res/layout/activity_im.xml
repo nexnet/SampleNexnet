@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:clickable="true"
-        android:src="@drawable/ic_action_name"
+        android:src="@drawable/ic_plus"
         app:backgroundTint="?attr/colorPrimary"
         android:layout_marginBottom="60dp"
         android:layout_alignParentBottom="true"

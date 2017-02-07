@@ -194,7 +194,12 @@ public class CallLogActivity extends Fragment implements SwipeRefreshLayout.OnRe
                     Log.d(DEBUG_TAG, "caller:" + callLogGroup.getChildItem(ii).getCaller());
                     Log.d(DEBUG_TAG, "call id:" + callLogGroup.getChildItem(ii).getCallId());
                     Log.d(DEBUG_TAG, "time and date:" + getDate(callLogGroup.getChildItem(ii).getCallEndTime()));
-                    caller=callLogGroup.getChildItem(ii).getCaller() + " - Last " + getDate(callLogGroup.getChildItem(ii).getCallEndTime());
+                    if(callLogGroup.getChildItem(ii).getCallDirection()==M800Call.M800CallDirection.Outgoing){
+                        caller=callLogGroup.getChildItem(ii).getCallee().replace("@nexnet.maaiii-api.org","") + " - Last " + getDate(callLogGroup.getChildItem(ii).getCallEndTime());
+                    }else{
+                        caller=callLogGroup.getChildItem(ii).getCaller().replace("@nexnet.maaiii-api.org","") + " - Last " + getDate(callLogGroup.getChildItem(ii).getCallEndTime());
+                    }
+
                     CallList.add(caller);
                 }
 
