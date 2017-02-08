@@ -129,6 +129,7 @@ public class CallAnswerScreenActivity extends Activity implements M800CallDelega
         keyguardLock.disableKeyguard();
     }
 
+    //method to initiate the Call activity screen
     private void startCallScreen() {
         Log.d(TAG, "startCallScreen");
         Intent intent = new Intent();
@@ -139,6 +140,7 @@ public class CallAnswerScreenActivity extends Activity implements M800CallDelega
         finish();
     }
 
+     //end the call
     @Override
     public void callTerminated(M800Call call, int status, Map<String, String> userInfo) {
         Log.d(TAG, "<callTerminated> status:" + status + " userInfo:" + userInfo);
